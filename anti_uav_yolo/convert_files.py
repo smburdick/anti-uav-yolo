@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+from tqdm import tqdm
 
 FPS = 25
 WIDTH = 1920
@@ -56,16 +57,30 @@ def test_bbox(image_file, bbox):
     plt.imshow(np.array(image))
     plt.show()
 
+downsample_image = lambda imagepath: Image.open(imagepath).resize((256, 144)).save(imagepath)
+
+def run_downsampling(basepath):
+    imagefiles = list(filter(lambda f: '.jpg' in f, os.listdir(basepath)))
+    # Perform a downsampling of all images in this path
+    for image in tqdm(imagefiles):
+        downsample_image(os.path.join(basepath, image))
+
+def img_label_conv(basepath):
+    for st in ['test', 'train', 'val']:
+        imagedir = os.path.join("images", st)
+        labeldir = os.path.join("labels", st)
+        for subdir in os.listdir(os.path.join(basepath, st)):
+            dir = os.path.join(basepath, st, subdir)
+            if '.DS_Store' not in dir:
+                print(f"Converting data for {dir}")
+                convert_frame_data(dir, imagedir, labeldir)
+
 def _fail(msg):
     print(msg)
     exit()
 
 if __name__ == '__main__':
-    basepath = sys.argv[1]
-    for st in ['test', 'train', 'val']:
-        imagedir = os.path.join("images", st)
-        labeldir = os.path.join("labels", st)
-        for subdir in os.listdir(os.path.join(basepath, st)):
-            print(f"Converting data for {subdir}")
-            convert_frame_data(os.path.join(basepath, st, subdir), imagedir, labeldir)
+    path = sys.argv[1]
+    run_downsampling(path)
+    
 
