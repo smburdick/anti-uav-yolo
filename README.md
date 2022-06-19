@@ -13,7 +13,7 @@ I was able to get decent results with this size:
 
 ![Results](results.png)
 
-![VisibleOut0](visible_out.mp4)
+![VisibleOut0](out.gif)
 
 ## Running the Norfair tracker
 Used this command
